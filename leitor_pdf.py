@@ -10,13 +10,13 @@ urls = [
     ("https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos/Anexo_I_Rol_2021RN_465.2021_RN627L.2024.pdf", "Rol_de_procedimentos_Anexo02.pdf")
 ]
 
-# Baixando ambos os PDFs
+#Baixando os PDF
 for url, filename in urls:
     print(f"Baixando {filename}...")
     wget.download(url, filename)
 
-# Processando apenas o primeiro PDF (Anexo 1)
-filename = urls[0][1]  # Pegando o nome do primeiro arquivo baixado
+# Processando apenas o primeiro PDF
+filename = urls[0][1]
 print(f"\nExtraindo tabelas de {filename}...")
 tabelas = tabula.read_pdf(filename, pages="all", lattice=True)
 
