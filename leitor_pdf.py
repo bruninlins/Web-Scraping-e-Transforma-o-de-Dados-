@@ -1,35 +1,47 @@
-#1° Bibliotecas:
+import wget
 import tabula
 import pandas as pd
 import zipfile
 import os
 
-#2° Extração de todas as tabelas do PDF:
-lista_tabelas = tabula.read_pdf("anexorol.pdf", pages="all", lattice=True)
+# URLs dos PDFs
+urls = [
+    ("https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos/Anexo_II_DUT_2021_RN_465.2021_RN628.2025_RN629.2025.pdf", "Rol_de_procedimentos_Anexo01.pdf"),
+    ("https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos/Anexo_I_Rol_2021RN_465.2021_RN627L.2024.pdf", "Rol_de_procedimentos_Anexo02.pdf")
+]
 
-#3° Junção de todas as tabelas em um DataFrame:
-tabela_juntas = pd.concat(lista_tabelas, ignore_index=True)
+# Baixando ambos os PDFs
+for url, filename in urls:
+    print(f"Baixando {filename}...")
+    wget.download(url, filename)
 
-#4° Substituição das abreviações "OD" e "AMB" pelas descrições completas:
-abreviacoes = {
-  "OD": "Odontologia",
-  "AMB": "Ambulatorio"
-}
+# Processando apenas o primeiro PDF (Anexo 1)
+filename = urls[0][1]  # Pegando o nome do primeiro arquivo baixado
+print(f"\nExtraindo tabelas de {filename}...")
+tabelas = tabula.read_pdf(filename, pages="all", lattice=True)
 
-tabela_juntas = tabela_juntas.applymap(lambda x: abreviacoes.get(str(x).strip().upper(), x) if isinstance(x, str) else x)
-
-#5° Salvando arquivo CSV:
-tabela_juntas.to_csv("tabela.csv", index=False, encoding="utf-8-sig")
-print("Todos os arquivos da tabela.csv foram salvos com sucesso!")
-
-#6° Compactar o arquivo CSV em ZIP:
-nome_arquivo_zip = "teste_Bruno_Torres.zip" 
-with zipfile.ZipFile(nome_arquivo_zip, 'w') as zipf:
-  zipf.write("tabela.csv", os.path.basename("tabela.csv"))
-
-print(f"arquivo {nome_arquivo_zip} foi compactado com sucesso!")
-
-print(tabela_juntas.columns)
-
-
-
+# Processando tabelas extraídas
+if tabelas:
+    tabela_final = pd.concat(tabelas, ignore_index=True)
+    
+    # Substituição das abreviações
+    abreviacoes = {
+        "OD": "Odontologia",
+        "AMB": "Ambulatorio"
+    }
+    tabela_final = tabela_final.applymap(lambda x: abreviacoes.get(str(x).strip().upper(), x) if isinstance(x, str) else x)
+    
+    # Salvando CSV
+    nome_csv = "tabela.csv"
+    tabela_final.to_csv(nome_csv, index=False, encoding="utf-8-sig")
+    print(f"Arquivo {nome_csv} salvo com sucesso!")
+    
+    # Compactando o CSV em ZIP
+    nome_zip = "teste.Bruno.zip"
+    with zipfile.ZipFile(nome_zip, 'w') as zipf:
+        zipf.write(nome_csv, os.path.basename(nome_csv))
+    
+    print(f"Arquivo {nome_zip} compactado com sucesso!")
+    print("Colunas do DataFrame:", tabela_final.columns)
+else:
+    print("Nenhuma tabela encontrada no PDF.")
