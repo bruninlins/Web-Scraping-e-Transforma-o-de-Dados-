@@ -29,7 +29,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico, consistindo em 
    
 3. **Transformação e Compactação** 📦
    - O resultado é salvo em um arquivo CSV.
-   - O CSV gerado é compactado em um arquivo ZIP denominado `tabelas_compactadas.zip`.
+   - O CSV gerado é compactado em um arquivo ZIP denominado `{meu_nome}.zip`.
 
 <br>
 
@@ -52,5 +52,3 @@ Basta executar o script Python para realizar todas as etapas automaticamente. Ao
 
 - **tabela.csv:** Arquivo estruturado contendo os dados das tabelas extraídas dos PDFs.
 - **tabelas_compactadas.zip:** Arquivo compactado contendo o CSV final.
-
-Este projeto demonstra uma abordagem automatizada para obtenção, processamento e compactação de dados tabulares extraídos de documentos PDF disponíveis publicamente.
